@@ -1,3 +1,6 @@
 My firs project
 Hello World
+<<<<<<< HEAD
 епит вашу мать когда начнете работать ???
+=======
+>>>>>>> 9a7db934199d4dbbe35abd145a36ed63140d851c
