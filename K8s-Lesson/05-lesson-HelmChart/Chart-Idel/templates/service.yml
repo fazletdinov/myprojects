@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name  : {{ .Release.Name }}-service
+  labels:
+    env  : prod
+    owner: IdelFazletdinov
+spec:
+  type    : LoadBalancer
+  selector:
+    project: {{ .Release.Name }}
+  ports:
+    - name      : {{ .Release.Name }}-listener
+      protocol  : TCP
+      port      : 80
+      targetPort: 80

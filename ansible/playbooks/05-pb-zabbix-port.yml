@@ -1,0 +1,45 @@
+---
+
+- name: Permission in firewall port 10051 for zabbix-agent on nodes
+  hosts: all
+  become: yes
+  
+  tasks: 
+  - block: #===for RedHat=====
+    - name: Open port 10051 over UDP
+      firewalld:
+        port: 10051/udp
+        permanent: yes
+        state: enabled
+     
+    - name: Open port 10051 over TCP
+      firewalld:
+        port: 10051/tcp
+        permanent: yes
+        state: enabled
+      
+    - name: Restart firewalld on all nodes
+      ansible.builtin.service:
+        name: firewalld
+        state: restarted
+    when: ansible_os_family == "RedHat"
+   
+  - block: # ===for Debian====
+    - name: Open port 10051 over UDP
+      ufw:
+        rule: allow 
+        port: 10051
+        proto: udp
+    
+    - name: Open port 10051 over TCP
+      ufw:
+        rule: allow
+        port: 10051
+        proto: tcp
+     
+    - name: Restart ufw on all nodes
+      ansible.builtin.service:
+        name: ufw
+        state: restarted
+    when: ansible_os_family == "Debian"   
+     

@@ -1,0 +1,10 @@
+
+[STAGING]
+linux_ubuntu    ansible_host=192.168.0.44 virtual_domain=domain1.idel.ru
+
+[PROD]
+linux_centos    ansible_host=192.168.0.45 virtual_domain=domain2.idel.ru
+
+[ALL_LINUX:children]
+STAGING
+PROD

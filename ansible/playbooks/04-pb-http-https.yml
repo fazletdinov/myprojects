@@ -1,0 +1,44 @@
+---
+
+- name: Resolution 80 and 433 potrs
+  hosts: all
+  become: yes
+  
+  tasks: 
+  - block: #====for RedHat===== 
+    - name: Resolution 80 potr
+      ansible.posix.firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+    
+    - name: Resolution 433 port
+      ansible.posix.firewalld:
+        service: https
+        permanent: yes
+        state: enabled
+  
+    - name: Restart service firewalld 
+      ansible.builtin.service:
+        name: firewalld
+        state: restarted
+    when: ansible_os_family == "RedHat"
+
+  - block: #====for Debian=====
+    - name: Resolution 21 potr
+      community.general.ufw:
+        rule: allow 
+        port: '80'
+        proto: tcp
+
+    - name: Resolution 53 port
+      community.general.ufw:
+        rule: allow
+        port: 53
+        proto: udp
+
+    - name: Restart service ufw
+      ansible.builtin.service:
+        name: ufw
+        state: restarted
+    when: ansible_os_family == "Debian"

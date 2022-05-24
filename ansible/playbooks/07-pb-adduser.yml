@@ -1,0 +1,90 @@
+---
+
+- name: Дистанционно добавление произвольных учетных записей с Ansible на узлы
+  hosts: all
+  become: yes
+  
+  tasks:
+  - block: #==== for RedHat ====
+    - name: Убедимся, что у нас на узлах есть группа "wheel"
+      group: 
+        name: wheel
+        state: present
+     
+    - name: Разрешим пользователям группы "wheel" иметь sudo без пароля
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: visudo -cf %s
+ 
+    - name: Создадим пользователя bomjur и поместим его в группу "wheel"
+      ansible.builtin.user:
+        name: bomjur
+        comment: cat Bomjur
+        group: wheel
+ 
+    - name: Пробросим публичный ключ пользователя bomjur с Ansible
+      ansible.posix.authorized_key:
+        user: bomjur
+        state: present
+        key: "{{ lookup('file', '/home/bomjur/.ssh/id_rsa.pub') }}"
+      ignore_errors: yes
+
+    - name: Создадим пользователя sharik и поместим его в группу "wheel"
+      ansible.builtin.user:
+        name: sharik
+        comment: dog Sharik
+        group: wheel
+
+    - name: Пробросим публичный ключ пользователя sharik c Ansible
+      ansible.posix.authorized_key:
+        user: sharik
+        state: present
+        key: "{{ lookup('file', '/home/sharik/.ssh/id_rsa.pub') }}"
+      ignore_errors: yes
+  
+    when: ansible_os_family == "RedHat"
+
+  - block: #===for Debian====
+    - name: Убедимся, что на узлах есть группа "sudo"
+      group: 
+        name: sudo
+        state: present
+    
+    - name: Разрешим пользователям группы sudo иметь без пароля
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%sudo'
+        line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+        validate: visudo -cf %s
+
+    - name: Создадим пользователя bomjur и поместим его в группу sudo
+      ansible.builtin.user:
+        name: bomjur
+        comment: cat bomjur
+        group: sudo
+
+    - name: Пробросим публичный ключ пользователя bomjur c ansible
+      ansible.posix.authorized_key:
+        user: bomjur
+        state: present
+        key: "{{ lookup('file', '/home/bomjur/.ssh/id_rsa.pub') }}"
+      ignore_errors: yes
+  
+    - name: Создадим пользователя sharik и поместим его в группу sudo
+      ansible.builtin.user:
+        name: sharik
+        comment: dog Sharik
+        group: sudo
+   
+    - name: Пробросим публичный ключ пользователя sharik с ansible
+      ansible.posix.authorized_key:
+        user: sharik
+        state: present
+        key: "{{ lookup('file', '/home/sharik/.ssh/id_rsa.pub') }}"
+      ignore_errors: yes
+
+    when: ansible_os_family == "Debian"

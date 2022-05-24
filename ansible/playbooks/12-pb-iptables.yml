@@ -1,0 +1,72 @@
+---
+
+- name: Разведка Ansibl'ом на предмет того, какие пакеты установлены на хосте
+  hosts: all
+  become: yes
+ 
+  tasks: 
+  - block:
+    - name: Разведка Ansibl'ом на предмет того, какие пакеты установлены на хосте
+      ansible.builtin.package_facts:
+        manager: auto
+    
+    - name: Print the package facts
+      ansible.builtin.debug:
+        var: ansible_facts.packages
+
+    - name: Остановка firewalld, если сервис запущен и присутсвует на хосте
+      ansible.builtin.service:
+        name: firewalld
+        state: stopped
+      when: "'firemalld' in ansible_facts.packages"
+
+    - name: Удаление с сервера firewalld, если сервис присутсвует на хосте
+      yum: 
+        name: firewalld
+        state: absent
+      when: "'firewalld' in ansible_facts.packages"
+    
+    - name: Установить iptables-services и если сервис отсутсвует на хосте
+      yum: 
+        name: "{{ package }}"
+      vars:
+        package:
+        - iptables
+        state: lates
+      when: "'iptables.services' not in ansible_facts.packages"
+      when: ansible_os_family == "RedHat"
+   
+    - name: Установить iptables-services на Debian
+      apt:
+        name: "{{ package }}"
+      vars: 
+        package:
+        - iptables
+        state: latest
+      when: "'iptables.services' not in ansible_facts.packages"
+      when: ansible_os_family == "Debian"
+
+    - name: Добавить в автозапуск iptables-services и не менять его статус работы.
+      ansible.builtin.service:
+        name: iptables.service
+        enabled: yes
+      when: "'iptables.service' in ansible_facts.packages"
+    
+    - name: Запустить iptables-services, если сервис не запущен
+      ansible.builtin.service:
+        name: iptables.service
+        state: started 
+      when: "'iptables.service' in ansible_facts.packages"
+ 
+    - name: Копирование файла конфигурации iptables
+      copy:
+        src: "/etc/ansible/roles/iptables_install/templates/iptables.j2"
+        dest: "/etc/sysconfig/iptables"
+      when: "'iptables.service' in ansible_facts.packages"
+ 
+    - name: Перезапуск iptables на узле для считывания конфигурации
+      ansible.builtin.service:
+        name: iptables.service
+        state: restarted
+      when: "'iptables.service' in ansible_facts.packages"
+

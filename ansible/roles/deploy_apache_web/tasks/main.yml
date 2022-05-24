@@ -1,0 +1,34 @@
+---
+# tasks file for deploy_apache_web
+- name: Check and Print Linux Version
+  debug: var=ansible_os_family
+
+- block:   #==========Block For RedHat========
+     - name: Install Apache Web Server for RedHat
+       yum: name=httpd state=latest
+     - name: Start Web Server for RedHat
+       service: name=httpd state=started enabled=yes
+  when: ansible_os_family == "RedHat"
+
+
+- block:  #======Block For Debian=====
+     - name: Install Apache Web Server fot Debian
+       apt: name=apache2 state=latest
+     - name: Start Web Server for Debian
+       service: name=apache2 state=started enabled=yes
+  when: ansible_os_family == "Debian"
+
+- name: Generate Index.html file
+  template: src=index.j2 dest={{ destin_folder }}/index.html mode=0555
+  notify:
+    - Restart Apache RedHat
+    - Restart Apache Debian
+
+- name: Copy Home Page file Web Server fot RedHat
+  copy: src={{ item }} dest={{ destin_folder }} mode=0555
+  loop:
+     - "strelka.png"
+     - "med.png"
+  notify:
+     - Restart Apache RedHat
+     - Restart Apache Debian

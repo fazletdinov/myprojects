@@ -1,0 +1,21 @@
+---
+
+- name: Проверка на хостах на наличие установленного веб-сервера nginx
+  hosts: all
+  become: yes
+  gather_facts: yes
+  
+  tasks: 
+  - name: "Check if Nginx is installed"
+    package_facts:
+      manager: "auto"
+      
+  - name: "Nginx test result"
+    debug:
+      msg: "NGINX found"
+    when: "'nginx' in ansible_facts.packages"
+   
+  - name: "Nginx test result"
+    debug:
+      msg: "NGINX NOT found"
+    when: "'nginx' not in ansible_facts.packages"

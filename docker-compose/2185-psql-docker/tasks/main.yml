@@ -1,0 +1,14 @@
+---
+- import_tasks: 00-create-path.yml
+  tags:
+    - psql-docker
+
+#- import_tasks: 03-consul-reg.yml
+#  tags:
+#    - consul-reg
+
+
+- import_tasks: 10-lauch.yml
+  tags:
+   - psql-compose
+   - psql-docker

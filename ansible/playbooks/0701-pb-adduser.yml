@@ -1,0 +1,20 @@
+---
+
+- name: Проброс ssh ключа пользователя
+  hosts: all
+  become: yes 
+  
+  tasks:
+  - name: Add the user 'bomjur' with a specific uid and a primary group of 'admin'
+    ansible.builtin.user:
+      name: bomjur
+      comment: cat bomjur
+      group: wheel
+
+  - name: Set authorized key in alternate location
+    ansible.posix.authorized_key:
+      user: bomjur
+      state: present
+      key: "{{ lookup('file', '/home/bomjur/.ssh/id_rsa.pub') }}"
+      
+

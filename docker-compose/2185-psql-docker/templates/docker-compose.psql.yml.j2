@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  psql:
+    image: {{psql_image}}:{{psql_version}}
+    container_name: psql
+    network_mode: host
+    ports:
+      - {{psql_bind_addr}}:{{psql_port}}:{{psql_port}} # psql port
+    environment:
+      - POSTGRES_USER={{psql_db_user}}
+      - POSTGRES_PASSWORD={{ vault_dict_users_secret.psql_db_pass }}
+      - POSTGRES_DB={{psql_db_name}}
+    volumes:
+      - {{psql_node_data_path}}:/var/lib/postgresql/data
+      - {{psql_node_data_conf}}/postgresql.conf:/etc/postgresql/postgresql.conf
+      - {{ssl_key_app_path}}:{{ssl_key_app_path}}
+    restart: always
+    command: -c config_file=/etc/postgresql/postgresql.conf

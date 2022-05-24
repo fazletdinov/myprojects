@@ -1,0 +1,30 @@
+---
+
+- name: Ansible Lesson Vault
+  hosts: all
+  become: yes
+  
+
+  vars: 
+    admin_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          61366264316430326533366331633834343431353932356664613664336139626434373031386136
+          3239366632366230386336333335366333373966316261610a366465313239373062636532383437
+          36323766333466633265623433333239363964373630313366343635643530336566326132373737
+          6234313661643430360a373830306364343036343966366266653063616334346164623166666433
+          6333
+  
+  tasks: 
+  - name: Install package Tree
+    yum: name=tree state=latest
+    when: ansible_os_family == "RedHat"
+
+  - name: Create Config file
+    copy:
+      dest: "/home/myconfig.conf"
+      content: |
+        port = 9092
+        log  = 7days
+        home = /opt/kafka/bin/
+        user = admin
+        password = {{ admin_password }}

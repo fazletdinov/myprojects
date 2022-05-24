@@ -1,0 +1,21 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata: 
+  name: my-web-deployment
+  labels:
+    app: my-k8s-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      project: devops
+  template: 
+    metadata:
+      labels: 
+        project: devops
+    spec:
+      containers:
+        - name: devops-web
+          image: idelfazletdinov/k8sphp:latest
+          ports:
+            - containerPort: 80

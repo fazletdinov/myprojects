@@ -1,0 +1,19 @@
+---
+
+- name: Запуск вскх плэйбуков с 1-12
+  hosts: all
+  become: yes
+ 
+- import_playbook: 01-pb-selinux-disable.yml
+- import_playbook: 02-pb-update-all-pakages.yml
+- import_playbook: 03-pb-progs-install.yml
+- import_playbook: 04-pb-http-https.yml
+- import_playbook: 05-pb-zabbix-port.yml
+- import_playbook: 06-pb-nginx-install.yml 
+- import_playbook: 0701-pb-adduser.yml
+- import_playbook: 07-pb-adduser.yml
+- import_playbook: 08-pb-user-del.yml
+- import_playbook: 09-pb-shel.yml
+- import_playbook: 10-pb-install-dpcker.yml
+- import_playbook: 11-pb-gathe_facts.yml
+- import_playbook: 12-pb-iptables.yml

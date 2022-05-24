@@ -1,0 +1,67 @@
+---
+- import_tasks: shared/tasks/create-dir-docker-compose.yml
+- import_tasks: shared/tasks/copy-security-linits.yml
+
+- name: create folder psql-conf
+  ansible.builtin.file:
+    path: "{{item}}"
+    state: directory
+    mode: '0755'
+  with_items:
+    - "{{psql_node_data_path}}"
+    - "{{psql_node_data_conf}}"
+
+- name: copy psql config
+  template:
+    src: "postgresql.conf.j2"
+    dest: "{{psql_node_data_conf}}/postgresql.conf"
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - psql-config
+
+- name: create backup_dir
+  ansible.builtin.file:
+    path: "{{psql_backup_dir}}"
+    owner: "{{bkp_user}}"
+    group: "{{bkp_user}}"
+    mode: '0755'
+    state: directory
+  tags:
+    - backup-path
+
+
+- name: create ssl dir
+  ansible.builtin.file:
+    path: "{{ssl_key_app_path}}"
+    mode: '0755'
+    state: directory
+  tags:
+    - ssl
+
+- import_tasks: shared/tasks/generate-ssl-selfsigned.yml
+  tags:
+    - ssl
+
+- name: Copy cert
+  ansible.builtin.copy:
+    src: "{{ssl_key_app_path}}/cert.pem"
+    dest: "{{ssl_key_app_path}}/server.crt"
+    owner: "root"
+    group: "systemd-coredump"
+    mode: '0640'
+    remote_src: yes
+  tags:
+    - ssl
+
+- name: Copy key
+  ansible.builtin.copy:
+    src: "{{ssl_key_app_path}}/key.pem"
+    dest: "{{ssl_key_app_path}}/server.key"
+    owner: "root"
+    group: "systemd-coredump"
+    mode: '0640'
+    remote_src: yes
+  tags:
+    - ssl

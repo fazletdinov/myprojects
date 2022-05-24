@@ -1,0 +1,18 @@
+---
+
+appname: psql
+app_path: /opt/docker
+
+psql_bind_addr: "{{global_bind_addr}}"
+psql_port: 5432
+psql_node_data_path: "/opt/psql/db"
+psql_node_data_conf: "/opt/psql/conf"
+psql_backup_dir: "/mnt/pgbackup"
+psql_version: 14.1
+psql_image: postgres
+
+
+psql_db_user: postgres
+psql_db_name: db1
+
+ssl_key_app_path: /opt/ssl

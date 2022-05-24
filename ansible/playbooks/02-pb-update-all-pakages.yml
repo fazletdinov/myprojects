@@ -1,0 +1,14 @@
+---
+
+- name: Update all pakages
+  hosts: all
+  become: yes
+ 
+  tasks: 
+  - name: update pakages
+    yum: name='*' state=latest
+    when: ansible_os_family == "RedHat"
+
+  - name: update pakages
+    apt: name='*' state=latest
+    when: ansible_os_family == "Debian"

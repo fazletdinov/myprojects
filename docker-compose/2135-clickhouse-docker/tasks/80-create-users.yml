@@ -1,0 +1,17 @@
+---
+
+- name: copy  config.xml
+  template:
+    src:  "{{item}}.j2"
+    dest: "{{clickhouse_path}}/conf/{{item}}"
+  with_items:
+    - "users.xml"
+  tags:
+    - create-users
+
+- name: run docker-conmpose restart ch
+  shell: "docker-compose restart clickhouse"
+  args:
+    chdir: "{{docker_compose_path}}"
+  tags:
+    - create-users

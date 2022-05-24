@@ -1,0 +1,11 @@
+---
+# handlers file for Vault
+
+- name: iptables save
+  shell: netfilter-persistent save
+ 
+- name: vault systemd
+  systemd:
+    name: "vault"
+    enabled: yes
+    state: started

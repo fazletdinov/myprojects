@@ -1,0 +1,28 @@
+---
+
+- name: Запустим с помощью Ansible команды для командной строки на узлах
+  hosts: all
+  become: yes
+  
+  tasks: 
+  - block: #=== for Debian===
+    - name: Запустим дистанционно запись генерированной строки в файл
+      ansible.builtin.shell: openssl rand -base64 32 >> somefile.txt
+      args: 
+        chdir: /home/lich
+        creates: somefile.txt
+      
+    - name: Скопируем полученный внутри каталога
+      ansible.builtin.shell: cp /home/lich/somefile.txt /home/lich/somefile2.txt
+    when: ansible_os_family == "Debian"
+    
+  - block: #=== for RedHat ===
+    - name: Запустим дистанционно запись генерированнйо строки в Debian
+      ansible.builtin.shell: openssl rand -base64 32 >> somefile.txt
+      args: 
+        chdir: /home/idel
+        creates: somefile.txt
+     
+    - name: Скопируем полученный файл внутри каталога
+      ansible.builtin.shell: cp /home/idel/somefile.txt /home/idel/somefile2.txt
+    when: ansible_os_family == "RedHat"

@@ -1,0 +1,58 @@
+---
+
+- name: Установка zabbix-agent на узлах 
+  hosts: all
+  become: yes
+  
+  tasks: 
+  - block: #===for RedHat ===
+    - name: Установка docker на улах
+      yum:
+        name: docker
+        state: latest
+        update_cache: yes
+     
+    - name: Поставим в автозапуск docker на узлах
+      ansible.builtin.service:
+        name: docker
+        enabled: yes
+      ignore_errors: yes
+    
+    - name: Запустим docker на улах
+      ansible.builtin.service:
+        name: docker
+        state: started
+      ignore_errors: yes
+    
+    - name: Версия docker на узлах
+      shell: docker info
+      register: result
+
+    - debug:
+        var: result 
+    when: ansible_os_family == "RedHat"
+
+  - block: #===for Debian====
+    - name: install docker
+      apt: 
+        name: docker
+        state: latest
+        update_cache: yes
+
+    - name: Поставить docker на автозагрузку
+      service:
+        name: docker
+        enabled: yes
+
+    - name: started docker
+      service: 
+        name: docker
+        state: started
+           
+    - name: info docker
+      shell: docker info
+      register: result
+      
+    - debug:
+        var: result
+    when: ansible_os_family == "Debian" 

@@ -1,0 +1,34 @@
+---
+- name: My Super Puper Playbook fir Variables lesson
+  hosts: all
+  become: yes
+
+  vars: 
+    message1: Privet
+    message2: World
+    secret  : сегодня 8 февраля 2022 года
+
+  tasks: 
+  - name: Print Secret variable
+    debug:
+      var: secret
+
+  - debug:
+      msg: "Секретное слово: {{ secret}}"
+
+  - debug:
+      msg: "Повелитель этого сервера -->{{ owner }}<--" 
+    
+  - set_fact: full_message="{{ message1 }} {{ message2 }} from {{ owner }}"
+    
+  - debug:
+      var: full_message
+
+  - debug: 
+      var: ansible_distribution
+
+  - shell: uptime
+    register: result
+
+  - debug:
+      var: result

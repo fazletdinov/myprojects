@@ -1,0 +1,11 @@
+- import_tasks: 00-add-repo.yml
+  tags:
+    - docker
+
+- import_tasks: 01-install-docker.yml
+  tags:
+    - docker
+
+- import_tasks: 02-configure-docker.yml
+  tags:
+    - docker

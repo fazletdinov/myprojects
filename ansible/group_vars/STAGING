@@ -1,0 +1,4 @@
+---
+anible_user                  : lich
+ansible_ssh_private_key_file : /home/lich/.ssh/authorized_keys
+

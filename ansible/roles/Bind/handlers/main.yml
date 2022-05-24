@@ -1,0 +1,7 @@
+---
+# handlers file for Bind
+- name: bind systemd
+  systemd: 
+    name: "{{ service_name }}"
+    enabled: yes
+    state: started

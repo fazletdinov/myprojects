@@ -1,0 +1,22 @@
+---
+
+- name: Ansible Lesson Error
+  hosts: PROD
+  any_errors_fatal: true
+  become: yes
+
+  tasks: 
+  - name: Tasks Number1
+    yum: name=treeee state=latest
+    ignore_errors: yes
+   
+  - name: Tsks Number2
+    shell: echo HelloWorld!!!!
+    register: results
+    
+  - debug:
+      var: results
+
+  - name: Tasks Number3
+    shell: echo Privet Mirrrr!!!!
+       

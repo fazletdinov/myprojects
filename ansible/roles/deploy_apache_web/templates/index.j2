@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+/* Этот стиль задает ширину всех изображений 100%: */
+img {
+    width:100%;
+}
+</style>
+</head>
+<body>
+
+<h1>HTML Стили изображения</h1>
+
+<p>На изображении ниже атрибут width установлен в 128 пикселей, но таблица стилей переопределяет его и устанавливает ширину в 100%.</p>
+<img src="med.png" alt="HTML5 иконка" width="128" height="128">
+
+<p>На рисунке ниже используется атрибут style, ширина которая равна 128 пикселям, что переопределяет таблицу стилей:</p>
+<img src="strelka.png" alt="HTML5 иконка" style="width:128px;height:128px;">
+Server Host Name: {{ ansible_hostname }}<br>
+Server Os Family is: {{ ansible_os_family }}<br>
+IP Address of this Server is: {{ ansible_default_ipv4.address }}<br>
+
+</body>
+</html>

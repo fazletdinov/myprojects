@@ -1,0 +1,10 @@
+---
+clickhouse_version: 22.1.3.7
+clickhouse_bind_addr: "{{global_bind_addr}}"
+clickhouse_port: 8123
+
+clickhouse_path: /opt/clickhouse
+clickhouse_exporter_version: latest
+clickhouse_exporter_port: 9116
+
+exporter_user: user_ch_exporter

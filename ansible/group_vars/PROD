@@ -1,0 +1,4 @@
+---
+
+ansible_user                 : idel
+ansible_ssh_private_key_file : /home/idel/.ssh/authorized_keys

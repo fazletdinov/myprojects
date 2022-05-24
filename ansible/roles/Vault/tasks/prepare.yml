@@ -1,0 +1,46 @@
+---
+
+- name: Prepare System for RedHat
+  block:
+    - name: Install Packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - wget
+        - chrony
+        - curl
+
+    - name: Allow Ports
+      firewalld:
+        port: "{{ item }}"
+        permanent: yes
+        state: enabled
+      loop: [ '8200/tcp' ]
+  when: ansible_os_family == "RedHat"
+
+- name: Security Settings for Debian
+  block:
+    - name: Install Packages
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - wget
+        - chrony
+        - curl
+        - apt-transport-https
+    
+    - name: Allow TCP Ports
+      iptables:
+        chain: INPUT
+        rule_num: '1'
+        action: insert
+        protocol: tcp
+        jump: ACCEPT
+        destination_port: "{{ item }}"
+      loop: [ '8200' ]
+      notify:
+        - iptables save
+  when: ansible_os_family == "Debian"

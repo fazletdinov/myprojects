@@ -1,0 +1,51 @@
+---
+
+- name: Insttall Hashicorp Vault for RedHat
+  block:
+    - name: Add Repository
+      get_url:
+        url: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+        dest: /etc/yum.repos.d/hashicorp.repo
+      ignore_errors: yes
+ 
+    - name: Install Vault
+      yum:
+        name: vault
+        state: present
+      notify: 
+        - vault systemd
+     
+    - name: Set Shell Environment
+      copy: 
+        src: profile.d/vault.sh
+        dest: /etc/profile.d/vault.sh
+  when: ansible_os_family == "RedHat"
+
+- name: Install Hashicorp Vault for Debian
+  block:
+    - name: Import Vault Apt Key
+      apt_key:
+        url: https://apt.releases.hashicorp.com/gpg
+        state: present
+      ignore_errors: yes
+     
+    - name: Add APT Repository
+      apt_repository:
+        repo: deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_lsb.codename }} main
+        state: present
+        filename: hashicorp
+      ignore_errors: yes
+  
+    - name: Install Vault
+      apt:
+        name: vault
+        state: present
+      notify: 
+        - vault systemd
+
+    - name: Set Shell Environment
+      lineinfile:
+        path: /etc/environment
+        line: export VAULT_SKIP_VERIFY=true
+        create: yes
+  when: ansible_os_family == "Debian" 

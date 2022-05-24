@@ -1,0 +1,17 @@
+---
+- name: install nginx RedHat
+  hosts: PROD
+  become: yes
+  vars:
+    nginx_user: nginx 
+  roles:
+  - nginx
+
+- name: install nginx Debian   
+  hosts: STAGING
+  become: yes
+  vars: 
+    nginx_user: www-data
+  roles:
+  - nginx
+  

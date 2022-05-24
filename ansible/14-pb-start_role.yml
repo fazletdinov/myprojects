@@ -1,0 +1,8 @@
+---
+
+- name: Install Bind
+  hosts: all
+  become: yes
+ 
+  roles: 
+  - Bind 

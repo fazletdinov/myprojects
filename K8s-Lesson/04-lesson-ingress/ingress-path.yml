@@ -1,0 +1,25 @@
+apiVersion: network.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-hosts
+
+spec:
+  rules:
+  - host: www.fvi-it.com
+    http:
+      paths:
+      - path: "/page1"
+        backend:
+          serviceName: webx
+          servicePort: 80
+ 
+      - path: "/page2"
+        backend:
+          serviceName: webx
+          servicePort: 80
+
+      - path: "/page3"
+        backend:
+          serviceName: webx
+          servicePort: 80
+

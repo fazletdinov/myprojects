@@ -1,0 +1,30 @@
+---
+
+- name: Install nginx on all nodes
+  hosts: all
+  become: yes
+ 
+  tasks:
+  - block: #====for RedHat=== 
+    - name: Install Nginx on all nodes
+      yum: 
+        name: nginx 
+        state: present
+  
+    - name: Started Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+    when: ansible_os_family == "RedHat"
+
+  - block: #====for Debian=====
+    - name: Install Nginx on all nodes
+      apt:
+        name: nginx
+        state: latest
+
+    - name: Started Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+    when: ansible_os_family == "Debian"

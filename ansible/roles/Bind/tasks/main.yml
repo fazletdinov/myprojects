@@ -1,0 +1,24 @@
+---
+# tasks file for Bind
+- name: Include vars for os family
+  include_vars:
+    file: "{{ ansible_os_family }}.yml"
+
+- name: Install Bind on RedHat Family
+  yum:
+    name: bind
+    state: present
+  when: ansible_os_family == "RedHat"
+  notify:
+    - bind systemd
+
+- name: Install Bind on debian Family
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop: 
+    - bind9
+    - dnsutils
+  when: ansible_os_family == "Debian"
+  notify: 
+    - bind systemd
